@@ -4,18 +4,22 @@ require_once("includes/database.php");
 require_once("includes/classes/db.cls.php");
 require_once("includes/classes/sitedata.cls.php");
 require_once("includes/functions/common.php");
-require_once("includes/classes/Banner.cls.php");
-require_once("includes/classes/News.cls.php");
-require_once("includes/classes/kavita.cls.php");
-require_once("includes/classes/PhotoGalleries.cls.php");
+require_once("includes/classes/Kavita.cls.php");
+
 
 $db = new SiteData();
-$bannerObj = new Banner();
-$newsObj = new News();
 $kavitaObj = new Kavita();
-$phoObj = new PhotoGalleries();
 
+if(isset($_REQUEST['url']) and !empty($_REQUEST['url'])){
+	$k_url = $_REQUEST['url'];
+}
 
+$res_kavita = $kavitaObj->getKavitaByUrl($k_url); 
+$total_kavita = $res_kavita['NO_OF_ITEMS'];
+// Redirect to home page if data not found
+if($total_kavita == 0){
+	redirect($page="index.php");
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,13 +30,12 @@ $phoObj = new PhotoGalleries();
     <meta name="description" content="">
     <meta name="author" content="">
 	
-    <title><?=PAGE_TITLE?> | Events</title>
+    <title><?=PAGE_TITLE?> | Kavita</title>
 	
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css"  type="text/css">
 	
-	<!-- Owl Carousel Assets -->
-    <link href="owl-carousel/owl.carousel.css" rel="stylesheet">
+	
   	
 	<!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
@@ -47,8 +50,7 @@ $phoObj = new PhotoGalleries();
 <header>
 	<!--Top-->
 	<?php include("includes/header.php");?>
-	<!--Home Slider-->
-	<?php include("includes/slide.php");?>
+	
 </header>
 	
 	<!--Navigation-->
@@ -57,13 +59,44 @@ $phoObj = new PhotoGalleries();
 	<!-- /////////////////////////////////////////Content -->
 	<div id="page-content" class="index-page">
 		<div class="clearfix no-gutter">
-			<div id="main-content" class="col-md-9 fix-right">
-				<?php include("includes/events.php");?>
-				<div class="fixclear">&nbsp;</div>
-				<?php include("includes/article.php");?>
-				<div class="fixclear">&nbsp;</div>
-				<?php include("includes/poem.php");?>
-				<div class="fixclear">&nbsp;</div>
+			<div class="col-md-9 fix-right">
+				
+<div class="col-md-12">
+			
+<?php
+if($_GET['url'])	{		
+$id = $res_kavita['oDATA'][0]['id'];
+$publish_date = outText($res_kavita['oDATA'][0]['publish_date']);
+$title = outText($res_kavita['oDATA'][0]['title']);
+$description = $res_kavita['oDATA'][0]['description'];
+$category = outText($res_kavita['oDATA'][0]['category']);
+$file_name = outText($res_kavita['oDATA'][0]['file_name']);
+?>
+<div class="col-sm-12">
+<div class="tag-title">
+					<h2>Kavita</h2>
+				</div>
+									
+					<h6><?php echo $title ;?></h6>	
+									
+														
+							
+							<div class="zoom-container"><img src="documents/<?php echo $file_name;?>"/></div>
+							
+							
+								<div class="clearfix">&nbsp;</div>
+								<p><?php echo $description ;?></p>
+								
+								<div><i class="fa fa-calendar"></i> <?php echo $publish_date ;?>  </div>
+							
+						
+												
+					</div>
+			
+			</div>
+				<div class="clearfix">&nbsp;</div>
+<?php }?>	
+		
 			</div>
 			
 			<div id="sidebar" class="col-md-3 fix-left">
@@ -82,22 +115,7 @@ $phoObj = new PhotoGalleries();
 	<!-- Core JavaScript Files -->  	 
     <script src="js/bootstrap.min.js"></script>
 	
-	<script src="owl-carousel/owl.carousel.js"></script>
-    <script>
-    $(document).ready(function() {
-      $("#owl-slide").owlCarousel({
-       autoPlay: 3000,
-			items : 4,
-			itemsDesktop : [1199,4],
-			itemsDesktopSmall : [979,3],
-			itemsTablet : [768, 2],
-			itemsMobile : [479, 1],
-			navigation: true,
-			navigationText: ['<i class="fa fa-chevron-left fa-5x"></i>', '<i class="fa fa-chevron-right fa-5x"></i>'],
-			pagination: false
-      });
-    });
-    </script>
+	
 	
 
 </body>
